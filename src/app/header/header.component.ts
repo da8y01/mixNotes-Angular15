@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { LoginComponent } from '../login/login.component';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
@@ -11,8 +11,8 @@ import { AuthService } from '../services/auth.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
 
-  username: string = undefined;
-  subscription: Subscription;
+  username: string = '';
+  subscription!: Subscription;
 
   constructor(public dialog: MatDialog,
     private authService: AuthService ) { }
@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
 
     logOut() {
-      this.username = undefined;
+      this.username = '';
       this.authService.logOut();
     }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialogRef} from '@angular/material';
+import {MatDialogRef} from '@angular/material/dialog';
 import { AuthService } from '../services/auth.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent implements OnInit {
 
   user = {username: '', password: '', remember: false};
-  errMess: string;
+  errMess: string = '';
 
   constructor(public dialogRef: MatDialogRef<LoginComponent>,
     private authService: AuthService) { }
