@@ -28,35 +28,35 @@ import { switchMap } from 'rxjs/operators';
 })
 export class DishdetailComponent implements OnInit {
 
-  @ViewChild('cform') commentFormDirective;
-  dish: Dish;
-  dishcopy: Dish;
-  dishIds: string[];
-  prev: string;
-  next: string;
-  comment: Comment;
-  errMess: string;
+  @ViewChild('cform') commentFormDirective: any;
+  dish!: Dish;
+  dishcopy!: Dish;
+  dishIds!: string[];
+  prev!: string;
+  next!: string;
+  comment!: Comment;
+  errMess!: string;
   visibility = 'shown';
   favorite = false;
 
-  formErrors = {
+  formErrors: { [key: string]: any } = {
     'comment': ''
   };
 
-  validationMessages = {
+  validationMessages: any = {
     'comment': {
       'required':      'Comment is required.'
     }
   };
 
-  commentForm: FormGroup;
+  commentForm!: FormGroup;
 
   constructor(private dishservice: DishService,
     private favoriteService: FavoriteService,
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder,
-    @Inject('baseURL') private baseURL) { }
+    @Inject('baseURL') public baseURL: string) { }
 
   ngOnInit() {
     this.createForm();

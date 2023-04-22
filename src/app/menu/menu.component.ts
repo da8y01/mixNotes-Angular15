@@ -19,13 +19,13 @@ import { flyInOut, expand } from '../animations/app.animation';
 })
 export class MenuComponent implements OnInit {
 
-  dishes: Dish[];
-  errMess: string;
+  dishes!: Dish[];
+  errMess!: string;
 
-  selectedDish: Dish;
+  selectedDish!: Dish;
 
   constructor(private dishService: DishService,
-    @Inject('baseURL') private baseURL) { }
+    @Inject('baseURL') public baseURL: string) { }
 
   ngOnInit() {
     this.dishService.getDishes()

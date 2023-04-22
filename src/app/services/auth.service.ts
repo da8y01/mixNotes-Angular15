@@ -26,7 +26,7 @@ export class AuthService {
   tokenKey = 'JWT';
   isAuthenticated: Boolean = false;
   username: Subject<string> = new Subject<string>();
-  authToken: string = undefined;
+  authToken: string = '';
 
    constructor(private http: HttpClient,
      private processHTTPMsgService: ProcessHTTPMsgService) {
@@ -49,11 +49,11 @@ export class AuthService {
    }
 
    clearUsername() {
-     this.username.next(undefined);
+     this.username.next('');
    }
 
    loadUserCredentials() {
-     const credentials = JSON.parse(localStorage.getItem(this.tokenKey));
+     const credentials = JSON.parse(localStorage.getItem(this.tokenKey) || '');
      console.log('loadUserCredentials ', credentials);
      if (credentials && credentials.username !== undefined) {
        this.useCredentials(credentials);
@@ -76,7 +76,7 @@ export class AuthService {
    }
 
    destroyUserCredentials() {
-     this.authToken = undefined;
+     this.authToken = '';
      this.clearUsername();
      this.isAuthenticated = false;
      localStorage.removeItem(this.tokenKey);

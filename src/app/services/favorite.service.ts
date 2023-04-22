@@ -18,7 +18,7 @@ export class FavoriteService {
     public auth: AuthService,
     private processHTTPMsgService: ProcessHTTPMsgService) { }
 
-  getFavorites(): Observable<Favorite> {
+  getFavorites(): Observable<Favorite> | null {
     if (!this.auth.isLoggedIn()) {
       return null;
     }
@@ -33,7 +33,7 @@ export class FavoriteService {
 
   isFavorite(id: string): Observable<FavoriteExists> {
     if (!this.auth.isLoggedIn()) {
-      return of({ exists: false, favorites: null });
+      return of({ exists: false, favorites: '' });
     }
     return this.http.get<FavoriteExists>(baseURL + 'favorites/' + id)
     .pipe(catchError(error => this.processHTTPMsgService.handleError(error)));

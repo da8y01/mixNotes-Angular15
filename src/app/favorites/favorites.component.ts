@@ -19,16 +19,17 @@ import { flyInOut, expand } from '../animations/app.animation';
 })
 export class FavoritesComponent implements OnInit {
 
-  favorites: Favorite;
-  delete: boolean;
-  errMess: string;
+  favorites!: Favorite;
+  delete!: boolean;
+  errMess!: string;
 
   constructor(private favoriteService: FavoriteService,
-    @Inject('baseURL') private baseURL) { }
+    @Inject('baseURL') public baseURL: string) { }
 
   ngOnInit() {
-    this.favoriteService.getFavorites()
-      .subscribe(favorites => this.favorites = favorites,
+    let getFavorites = this.favoriteService.getFavorites()
+    if (getFavorites)
+      getFavorites.subscribe(favorites => this.favorites = favorites,
         errmess => this.errMess = <any>errmess);
   }
 

@@ -19,11 +19,11 @@ import { flyInOut, expand } from '../animations/app.animation';
 })
 export class AboutComponent implements OnInit {
 
-  leaders: Leader[];
-  errMess: string;
+  leaders!: Leader[];
+  errMess!: string;
 
   constructor(private leaderservice: LeaderService,
-    @Inject('baseURL') private baseURL) { }
+    @Inject('baseURL') public baseURL: string) { }
 
   ngOnInit() {
     this.leaderservice.getLeaders()

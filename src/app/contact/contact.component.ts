@@ -20,21 +20,21 @@ import { FeedbackService } from '../services/feedback.service';
 })
 export class ContactComponent implements OnInit {
 
-  @ViewChild('fform') feedbackFormDirective;
-  feedbackForm: FormGroup;
-  feedback: Feedback;
+  @ViewChild('fform') feedbackFormDirective: any;
+  feedbackForm!: FormGroup;
+  feedback!: Feedback;
   contactType = ContactType;
-  submitted = null;
+  submitted: any;
   showForm = true;
 
-  formErrors = {
+  formErrors: { [key: string]: any } = {
     'firstname': '',
     'lastname': '',
     'telnum': '',
     'email': ''
   };
 
-  validationMessages = {
+  validationMessages: { [key: string]: any } = {
     'firstname': {
       'required':      'First Name is required.',
       'minlength':     'First Name must be at least 2 characters long.',
@@ -107,7 +107,7 @@ export class ContactComponent implements OnInit {
     this.feedbackservice.submitFeedback(this.feedback)
       .subscribe(feedback => {
          this.submitted = feedback;
-         this.feedback = null;
+         this.feedback = new Feedback;
          setTimeout(() => { this.submitted = null; this.showForm = true; }, 5000);
         },
         error => console.log(error.status, error.message));

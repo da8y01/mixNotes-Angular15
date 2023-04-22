@@ -23,17 +23,17 @@ import { flyInOut, expand } from '../animations/app.animation';
 })
 export class HomeComponent implements OnInit {
 
-  dish: Dish;
-  promotion: Promotion;
-  leader: Leader;
-  dishErrMess: string;
-  promoErrMess: string;
-  leaderErrMess: string;
+  dish!: Dish;
+  promotion!: Promotion;
+  leader!: Leader;
+  dishErrMess!: string;
+  promoErrMess!: string;
+  leaderErrMess!: string;
 
   constructor(private dishservice: DishService,
     private promotionservice: PromotionService,
     private leaderservice: LeaderService,
-    @Inject('baseURL') private baseURL) { }
+    @Inject('baseURL') public baseURL: string) { }
 
   ngOnInit() {
     this.dishservice.getFeaturedDish()
