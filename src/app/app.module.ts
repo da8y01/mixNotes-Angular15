@@ -24,8 +24,10 @@ import { AppComponent } from './app.component';
 //import 'hammerjs';
 import { MenuComponent } from './menu/menu.component';
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
+import { ItemdetailComponent } from './itemdetail/itemdetail.component';
 
 import { DishService } from './services/dish.service';
+import { ItemService } from './services/item.service';
 import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
 import { ProcessHTTPMsgService } from './services/process-httpmsg.service';
@@ -55,6 +57,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
     AppComponent,
     MenuComponent,
     DishdetailComponent,
+    ItemdetailComponent,
     HeaderComponent,
     FooterComponent,
     HomeComponent,
@@ -88,6 +91,7 @@ import {HTTP_INTERCEPTORS} from '@angular/common/http';
   ],
   providers: [
     DishService,
+    ItemService,
     PromotionService,
     LeaderService,
     {provide: 'baseURL', useValue: baseURL},

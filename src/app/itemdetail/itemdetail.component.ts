@@ -1,0 +1,146 @@
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { visibility, flyInOut, expand } from '../animations/app.animation';
+import { Dish } from '../shared/dish';
+import { Item } from '../shared/item';
+import { Comment } from '../shared/comment';
+import { DishService } from '../services/dish.service';
+import { ItemService } from '../services/item.service';
+import { FavoriteService } from '../services/favorite.service';
+
+import { Params, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+
+import { switchMap } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-itemdetail',
+  templateUrl: './itemdetail.component.html',
+  styleUrls: ['./itemdetail.component.scss'],
+  // tslint:disable-next-line:use-host-property-decorator
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  },
+  animations: [
+    visibility(),
+    flyInOut(),
+    expand()
+  ]
+})
+export class ItemdetailComponent implements OnInit {
+
+  @ViewChild('cform') commentFormDirective: any;
+  dish!: Dish;
+  dishcopy!: Dish;
+  dishIds!: string[];
+  item!: Item;
+  itemcopy!: Item;
+  itemIds!: string[];
+  prev!: string;
+  next!: string;
+  comment!: Comment;
+  errMess!: string;
+  visibility = 'shown';
+  favorite = false;
+
+  formErrors: { [key: string]: any } = {
+    'comment': ''
+  };
+
+  validationMessages: any = {
+    'comment': {
+      'required':      'Comment is required.'
+    }
+  };
+
+  commentForm!: FormGroup;
+
+  constructor(private itemservice: ItemService,
+    private favoriteService: FavoriteService,
+    private route: ActivatedRoute,
+    private location: Location,
+    private fb: FormBuilder,
+    @Inject('baseURL') public baseURL: string) { }
+
+  ngOnInit() {
+    this.createForm();
+
+    // this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
+    this.itemservice.getItemIds().subscribe(itemIds => this.itemIds = itemIds);
+    // this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.dishservice.getDish(params['id']); }))
+    this.route.params.pipe(switchMap((params: Params) => { this.visibility = 'hidden'; return this.itemservice.getItem(params['id']); }))
+    .subscribe(item => {
+      this.item = item;
+      this.setPrevNext(item._id);
+      this.visibility = 'shown';
+      this.favoriteService.isFavorite(this.item._id)
+      .subscribe(resp => { console.log(resp); this.favorite = <boolean>resp.exists; },
+          err => console.log(err));
+    },
+    errmess => this.errMess = <any>errmess);
+  }
+
+  setPrevNext(itemId: string) {
+    // const index = this.dishIds.indexOf(dishId);
+    // this.prev = this.dishIds[(this.dishIds.length + index - 1) % this.dishIds.length];
+    // this.next = this.dishIds[(this.dishIds.length + index + 1) % this.dishIds.length];
+    const index = this.itemIds.indexOf(itemId);
+    this.prev = this.itemIds[(this.itemIds.length + index - 1) % this.itemIds.length];
+    this.next = this.itemIds[(this.itemIds.length + index + 1) % this.itemIds.length];
+  }
+
+  goBack(): void {
+    this.location.back();
+  }
+
+  createForm() {
+    this.commentForm = this.fb.group({
+      rating: 5,
+      comment: ['', Validators.required]
+    });
+
+    this.commentForm.valueChanges
+      .subscribe(data => this.onValueChanged(data));
+
+    this.onValueChanged(); // (re)set validation messages now
+  }
+
+  onSubmit() {
+    this.itemservice.postComment(this.item._id, this.commentForm.value)
+      .subscribe(item => this.item = <Item>item);
+    this.commentFormDirective.resetForm();
+    this.commentForm.reset({
+      rating: 5,
+      comment: ''
+    });
+  }
+
+  onValueChanged(data?: any) {
+    if (!this.commentForm) { return; }
+    const form = this.commentForm;
+    for (const field in this.formErrors) {
+      if (this.formErrors.hasOwnProperty(field)) {
+        // clear previous error message (if any)
+        this.formErrors[field] = '';
+        const control = form.get(field);
+        if (control && control.dirty && !control.valid) {
+          const messages = this.validationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.formErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  addToFavorites() {
+    if (!this.favorite) {
+      // this.favoriteService.postFavorite(this.dish._id)
+      this.favoriteService.postFavorite(this.item._id)
+        .subscribe(favorites => { console.log(favorites); this.favorite = true; });
+    }
+  }
+}
